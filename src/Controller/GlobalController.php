@@ -11,8 +11,6 @@ class GlobalController extends AbstractController
     #[Route('/', name: 'accueil')]
     public function index(): Response
     {
-        return $this->render('global/index.html.twig', [
-            'controller_name' => 'GlobalController',
-        ]);
+        return $this->render('global/accueil.html.twig');
     }
 }
