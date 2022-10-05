@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Voiture;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Voiture>
@@ -19,6 +20,14 @@ class VoitureRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Voiture::class);
+    }
+
+    // ici on va creer une fonction permettant de récupérer une query par pagination
+    public function findAllWithPagination() : Query
+    {
+        return $this->createQueryBuilder('v')
+            ->orderBy('v.id', 'DESC')
+            ->getQuery();
     }
 
     public function add(Voiture $entity, bool $flush = false): void
