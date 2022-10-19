@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\RechercheVoiture;
 use App\Entity\Voiture;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,11 +24,21 @@ class VoitureRepository extends ServiceEntityRepository
     }
 
     // ici on va creer une fonction permettant de récupérer une query par pagination
-    public function findAllWithPagination() : Query
+    public function findAllWithPagination(RechercheVoiture $rechercheVoiture) : Query
     {
-        return $this->createQueryBuilder('v')
-            ->orderBy('v.id', 'DESC')
-            ->getQuery();
+        $req = $this->createQueryBuilder('v');
+        // on test si l'utilisateur a renseigné une année min
+        if($rechercheVoiture->getMinAnnee()){
+            $req = $req->andWhere('v.annee >= :minAnnee')
+            ->setParameter('minAnnee', $rechercheVoiture->getMinAnnee());
+        }
+        // on test si l'utilisateur a renseigné une année max
+        if ($rechercheVoiture->getMaxAnnee()) {
+            $req = $req->andWhere('v.annee <= :maxAnnee')
+            ->setParameter('maxAnnee', $rechercheVoiture->getMaxAnnee());
+        }
+            // ->orderBy('v.id', 'DESC')
+            return $req->getQuery();
     }
 
     public function add(Voiture $entity, bool $flush = false): void
