@@ -4,6 +4,14 @@
 
 {% block Montitre %} liste des voitures  {% endblock %}
 {% block body %}
+<div class="container">
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
+</div>
+
 {# formulaire pour gerer l'année de la voiture #}
 <div class="container">
     {{form_start(form)}}
@@ -17,35 +25,51 @@
         <div class="col-2">
             <input type="submit" class="btn btn-primary" value="rechercher"></input>
         </div>
-    </div>
-    
+    </div> 
     {{form_end(form)}}
+        {# si c'est un admin alors on l'affiche #}
+        {% if admin %}   
+            <a href="{{path('ajouter_voiture')}}" class="d-block mt-4 btn btn-success">Ajouter</a>
+        {% endif %}
 </div>
 {# pagination des voitures, 6 par page #}
 <div class="container">
     <div class="row no-gutters">
-    {% for voiture in voitures %}
-        <div class="col-12 col-lg-6 p-1">
-            <div class="card mb-3">
-                <div class="row no-gutters align-items-center p-2">
-                    <div class="col-12 col-md-4">
-                        <img src="{{ asset('images/'~ voiture.modele.image) }}" class="card-img" alt="...">
-                    </div>
-                    <div class="col">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ voiture.immatriculation}}</h5>
-                            <p class="card-text">
-                                <div>Marque : {{ voiture.modele.libelle }} </div>
-                                <div>Modele: {{ voiture.modele.marque.libelle}} - PM {{ voiture.modele.prixMoyen}} </div>
-                                <div>Nombre de porte : {{voiture.nbPortes}} </div>
-                                <div>Années : {{voiture.annee}}</div>
-                            </p>
+        {% for voiture in voitures %}
+            <div class="col-12 col-lg-6 p-1">
+                <div class="card mb-3">
+                    <div class="row no-gutters align-items-center p-2">
+                        <div class="col-12 col-md-4">
+                            <img src="{{ asset('images/'~ voiture.modele.image) }}" class="card-img" alt="...">
+                        </div>
+                        <div class="col">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ voiture.immatriculation}}</h5>
+                                <p class="card-text">
+                                    <div>Marque : {{ voiture.modele.libelle }} </div>
+                                    <div>Modele: {{ voiture.modele.marque.libelle}} - PM {{ voiture.modele.prixMoyen}} </div>
+                                    <div>Nombre de porte : {{voiture.nbPortes}} </div>
+                                    <div>Années : {{voiture.annee}}</div>
+                                </p>
+                            </div>
                         </div>
                     </div>
+                    {% if admin %}
+                    <div class="container">
+                        <div class="row no-gutters">                            
+                                <a href="{{path('modif_voiture', {'id' : voiture.id})}}" class="col btn btn-warning">Modifer</a>                            
+                               {# ici on vient supprimer la voiture avec un formulaire que l'on aura crée avec un token #}
+                                <form class="col" method="post" action="{{path('voiture_delete', {'id' : voiture.id})}}" onsubmit="return confirm('voulez-vous vraiment supprimer ?')">
+                                    <input type="hidden" name="_method" value="SUP">
+                                    <input type="hidden" name="_token" value="{{csrf_token(('SUP' ~ voiture.id ))}}">
+                                    <input type="submit" class="btn btn-danger" value="Supprimer">
+                                </form>                          
+                        </div>
+                    </div>    
+                    {% endif %}     
                 </div>
-            </div>
-        </div>
-    {% endfor %}
+            </div>                 
+        {% endfor %}
     </div>
     {# on fait la pagination sur les voitures #}
     <div class="navigation">

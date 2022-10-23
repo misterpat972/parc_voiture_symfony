@@ -30,7 +30,9 @@ class VoitureController extends AbstractController
         );
         return $this->render('voiture/voitures.html.twig',[
             'voitures' => $voitures,
-            "form" => $form->createView()
+            "form" => $form->createView(),
+            // si l'utilisateur est un utilisateur on lui affiche la page client et non admin
+            "admin" => FALSE,
         ]);        
     }
 }

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Modification {% endblock %}
+{% block Montitre %} Modification de la voiture {{voiture.immatriculation}} {% endblock %}
+
+
+{% block body %}
+<div class="container">
+    {{form_start(form)}}
+        {{form_widget(form)}}
+        <div class="mt-3">
+        <a href="{{path('admin')}}" class="btn btn-primary">Retour</a>
+        <input type="submit" class="btn btn-success" value="Valider">
+        </div>
+    {{form_end(form)}}
+</div>
+{% endblock %}
