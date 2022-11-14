@@ -4,7 +4,7 @@
 
 {% block Montitre %} liste des voitures  {% endblock %}
 {% block body %}
-<div class="container">
+<div id="flash" class="container">
 {% for message in app.flashes('success') %}
     <div class="alert alert-success">
         {{ message }}
@@ -76,5 +76,12 @@
         {{ knp_pagination_render(voitures) }}
     </div>
 </div>
+
+{# si on a un message flash, on le supprime au bou de 2 secondes #}
+<script>
+    setTimeout(function(){
+        document.getElementById('flash').innerHTML = '';
+    }, 3000);
+</script>
 
 {% endblock %}
